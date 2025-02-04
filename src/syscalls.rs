@@ -1,6 +1,6 @@
+// Removed: use std::ptr;
 use winapi::um::memoryapi::VirtualProtect;
 use winapi::shared::minwindef::DWORD;
-use std::ptr;
 
 pub fn stealth_virtual_protect(addr: *mut u8, size: usize, new_protect: DWORD) {
     unsafe {

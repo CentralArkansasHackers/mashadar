@@ -4,7 +4,7 @@ version = "1.0.0"
 edition = "2021"
 
 [dependencies]
-winapi = { version = "0.3", features = ["memoryapi", "processthreadsapi", "tlhelp32", "winnt", "handleapi", "debugapi"] }
+winapi = { version = "0.3", features = ["memoryapi", "processthreadsapi", "winnt", "debugapi", "handleapi", "synchapi", "errhandlingapi", "winbase", "tlhelp32"] }
 aes = "0.8"
-rand = "0.8"
 ctr = "0.9"
+rand = "0.8"
