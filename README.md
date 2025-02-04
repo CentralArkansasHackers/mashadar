@@ -33,10 +33,9 @@ mashadar/
 
 # 🔧 **Setup & Compilation**
 ### 1️⃣ **Install Rust on Windows**
-Run the following command in **PowerShell**:
-```sh
-irm https://sh.rustup.rs | iex
-```
+
+On Windows, go to https://www.rust-lang.org/tools/install and follow the instructions for installing Rust. At some point in the installation, you’ll be prompted to install Visual Studio. This provides a linker and the native libraries needed to compile the program. If you need more help with this step, see https://rust-lang.github.io/rustup/installation/windows-msvc.html
+
 For **cross-compilation on Linux/macOS**, install `mingw`:
 ```sh
 rustup target add x86_64-pc-windows-gnu
