@@ -91,6 +91,9 @@ graph TD;
     B -->|Step 2| C[Inject Shellcode]
     C -->|Step 3| D[Modify Execution Context]
     D -->|Step 4| E[Resume Process with Malicious Code]
+```
+
+---
 
 ### **🔹 2. Reflective Thread Hijacking**
 Instead of creating a new thread (which triggers AV alerts), Mashadar:
@@ -105,6 +108,8 @@ graph TD;
     C -->|Step 3| D[Modify Thread Context]
     D -->|Step 4| E[Resume Execution]
 ```
+
+---
 
 ### **🔹 3. Encrypted C2 Communication**
 - Uses **AES encryption** to fetch payloads.
