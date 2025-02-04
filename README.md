@@ -4,7 +4,8 @@ _"There is something worse than the Shadow. Worse than Darkfriends and Forsaken.
 _"It does not serve the Dark One. It kills everything."_
 
 ## 🚀 Overview
-**Mashadar** is a **stealthy, in-memory malware framework** designed for **nation-state level evasion**. It implements **process hollowing, reflective thread hijacking, direct syscalls, kernel callback removal, and AES-encrypted C2 communications** to maximize stealth.
+**Mashadar** is a **stealthy, in-memory malware framework** designed for **nation-state level evasion**.  
+It implements **process hollowing, reflective thread hijacking, direct syscalls, kernel callback removal, and AES-encrypted C2 communications** to maximize stealth.
 
 ✅ **No files written to disk**  
 ✅ **Executes inside legitimate processes**  
@@ -16,7 +17,7 @@ _"It does not serve the Dark One. It kills everything."_
 
 ## 📂 Project Structure
 
-```
+```plaintext
 mashadar/
 │── src/
 │   ├── main.rs          # Entry point (Process Hollowing + Execution)
@@ -40,17 +41,17 @@ Mashadar follows a **multi-stage attack process**. Below is a high-level **Merma
 sequenceDiagram
     participant Attacker
     participant Mashadar
-    participant Target Process (e.g., svchost.exe)
-    participant C2 Server
+    participant TargetProcess as "Target Process (e.g., svchost.exe)"
+    participant C2Server as "C2 Server"
 
     Attacker->>Mashadar: Run executable
-    Mashadar->>Target Process: Locate existing threads
-    Mashadar->>Target Process: Hijack thread & inject shellcode
-    Mashadar->>C2 Server: Request encrypted payload
-    C2 Server->>Mashadar: Send AES-encrypted shellcode
+    Mashadar->>TargetProcess: Locate existing threads
+    Mashadar->>TargetProcess: Hijack thread & inject shellcode
+    Mashadar->>C2Server: Request encrypted payload
+    C2Server->>Mashadar: Send AES-encrypted shellcode
     Mashadar->>Mashadar: Decrypt & execute shellcode
-    Mashadar->>Target Process: Modify thread execution to run payload
-    Target Process->>C2 Server: Establish C2 communication
+    Mashadar->>TargetProcess: Modify thread execution to run payload
+    TargetProcess->>C2Server: Establish C2 communication
 ```
 
 ---
@@ -85,11 +86,11 @@ Mashadar executes shellcode stealthily using **three core techniques**:
 - **Resumes execution with malicious payload**
 
 ```mermaid
-graph TD
-  A[Create Suspended Process (svchost.exe)] --> B[Unmap Executable Memory]
-  B --> C[Inject Shellcode]
-  C --> D[Modify Execution Context]
-  D --> E[Resume Process with Malicious Code]
+graph TD;
+    A[Create Suspended Process (svchost.exe)] -->|Step 1| B[Unmap Executable Memory]
+    B -->|Step 2| C[Inject Shellcode]
+    C -->|Step 3| D[Modify Execution Context]
+    D -->|Step 4| E[Resume Process with Malicious Code]
 ```
 
 ### **🔹 2. Reflective Thread Hijacking**
@@ -99,11 +100,11 @@ Instead of creating a new thread (which triggers AV alerts), Mashadar:
 3. **Resumes execution**—seamlessly hijacking the process.
 
 ```mermaid
-graph TD
-  A[Find Target Process] --> B[Find Suspended Thread]
-  B --> C[Inject Shellcode]
-  C --> D[Modify Thread Context]
-  D --> E[Resume Execution]
+graph TD;
+    A[Find Target Process] -->|Step 1| B[Find Suspended Thread]
+    B -->|Step 2| C[Inject Shellcode]
+    C -->|Step 3| D[Modify Thread Context]
+    D -->|Step 4| E[Resume Execution]
 ```
 
 ### **🔹 3. Encrypted C2 Communication**
@@ -112,10 +113,10 @@ graph TD
 - **Prevents signature-based detection** of raw shellcode transfers.
 
 ```mermaid
-graph TD
-  A[Request Payload] -->|AES Encrypted| B[C2 Server]
-  B -->|AES Encrypted Shellcode| C[Mashadar]
-  C --> D[Decrypt & Execute Payload]
+graph TD;
+    A[Request Payload] -->|AES Encrypted| B[C2 Server]
+    B -->|AES Encrypted Shellcode| C[Mashadar]
+    C -->|Decryption| D[Execute Shellcode]
 ```
 
 ---
