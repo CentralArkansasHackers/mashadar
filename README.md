@@ -1,4 +1,4 @@
-# 🖤 Mashadar – The Ultimate Nation-State Malware Framework
+# 🖤 Mashadar The Shadow That Walks Without Tracks
 
 _"There is something worse than the Shadow. Worse than Darkfriends and Forsaken."_  
 _"It does not serve the Dark One. It kills everything."_
