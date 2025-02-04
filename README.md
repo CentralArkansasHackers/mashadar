@@ -87,11 +87,10 @@ Mashadar executes shellcode stealthily using **three core techniques**:
 
 ```mermaid
 graph TD;
-    A[Create Suspended Process (svchost.exe)] -->|Step 1| B[Unmap Executable Memory]
+    A[Create Suspended Process] -->|Step 1| B[Unmap Executable Memory]
     B -->|Step 2| C[Inject Shellcode]
     C -->|Step 3| D[Modify Execution Context]
     D -->|Step 4| E[Resume Process with Malicious Code]
-```
 
 ### **🔹 2. Reflective Thread Hijacking**
 Instead of creating a new thread (which triggers AV alerts), Mashadar:
